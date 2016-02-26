@@ -33,7 +33,7 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
         TrustManager[] trustManagers = new TrustManager[] { new TrustEverythingSSLTrustManager() };
         SSLContext sc;
         try {
-            sc = SSLContext.getInstance("SSL");
+            sc = SSLContext.getInstance("TLS");
             sc.init(null, trustManagers, null);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException("This is a BUG in Selenium; please report it", e);

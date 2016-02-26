@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-import net.lightbody.bmp.proxy.ProxyServer;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.proxy.ProxyServer;  //legacy
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,11 @@ import com.epam.wilma.browsermob.domain.exception.ProxyCannotBeStartedException;
 import com.epam.wilma.browsermob.interceptor.BrowserMobRequestInterceptor;
 import com.epam.wilma.browsermob.interceptor.BrowserMobResponseInterceptor;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Class that creates and starts a new BrowserMob proxy server.
- * @author Marton_Sereg, Tunde_Kovacs, Tamas_Bihari
+ * @author Marton_Sereg, Tunde_Kovacs, Tamas_Bihari, Tamas Kohegyi
  *
  */
 @Component
@@ -46,7 +49,7 @@ public class BrowserMobProxy implements Proxy {
     private Boolean responseVolatile;
 
     @Autowired
-    private ProxyServer server;
+    private BrowserMobProxyServer server;
     @Autowired
     private BrowserMobRequestInterceptor requestInterceptor;
     @Autowired
@@ -74,13 +77,15 @@ public class BrowserMobProxy implements Proxy {
     public void start() {
         try {
             getProperties();
-            server.setPort(proxyPort);
-            server.start(requestTimeout);
-            ProxyServer.setResponseVolatile(responseVolatile);
-            server.setCaptureContent(true);
-            server.setCaptureBinaryContent(true);
-            server.addRequestInterceptor(requestInterceptor);
-            server.addResponseInterceptor(responseInterceptor);
+            server.setRequestTimeout(requestTimeout, TimeUnit.MILLISECONDS);
+            //server.setPort(proxyPort);
+            //server.start(requestTimeout);
+            server.start(proxyPort);
+            //ProxyServer.setResponseVolatile(responseVolatile);
+            //server.setCaptureContent(true);
+            //server.setCaptureBinaryContent(true);
+            //server.addRequestInterceptor(requestInterceptor);   !!!!!
+            //server.addResponseInterceptor(responseInterceptor); !!!!!
         } catch (Exception e) {
             throw new ProxyCannotBeStartedException("Starting the proxy server failed.", e);
         }

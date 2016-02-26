@@ -71,7 +71,7 @@ public class BrowserMobResponseInterceptorTest {
         // GIVEN
         given(responseTransformer.transformResponse(response)).willReturn(wilmaResponse);
         // WHEN
-        underTest.process(response);
+        underTest.process(response, null);
         // THEN
         verify(responseHandler).processResponse(wilmaResponse);
         verify(browserMobResponseUpdater).updateResponse(response, wilmaResponse);
@@ -84,7 +84,7 @@ public class BrowserMobResponseInterceptorTest {
         given(responseTransformer.transformResponse(response)).willReturn(wilmaResponse);
         BDDMockito.willThrow(e).given(responseHandler).processResponse(wilmaResponse);
         // WHEN
-        underTest.process(response);
+        underTest.process(response, null);
         // THEN
         verify(logger).error("exception", e);
     }
