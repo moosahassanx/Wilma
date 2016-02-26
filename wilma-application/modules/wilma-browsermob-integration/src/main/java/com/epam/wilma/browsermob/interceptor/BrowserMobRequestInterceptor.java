@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
+import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.proxy.http.BrowserMobHttpRequest;
 import net.lightbody.bmp.proxy.http.RequestInterceptor;
 
@@ -52,7 +53,7 @@ public class BrowserMobRequestInterceptor implements RequestInterceptor {
     private WilmaHttpRequestProcessor wilmaHttpRequestProcessor;
 
     @Override
-    public void process(final BrowserMobHttpRequest request) {
+    public void process(final BrowserMobHttpRequest request, Har har) {
         try {
             WilmaHttpRequest wilmaHttpRequest = httpRequestTransformer.transformRequest(request);
             wilmaHttpRequestProcessor.processRequest(wilmaHttpRequest);

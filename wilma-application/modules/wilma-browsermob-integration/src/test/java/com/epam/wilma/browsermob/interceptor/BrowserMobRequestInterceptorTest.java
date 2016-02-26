@@ -79,7 +79,7 @@ public class BrowserMobRequestInterceptorTest {
         ApplicationException e = new ApplicationException(EMPTY_STRING);
         given(httpRequestTransformer.transformRequest(bmRequest)).willThrow(e);
         // WHEN
-        underTest.process(bmRequest);
+        underTest.process(bmRequest, null);
         // THEN
         verify(logger).error(EMPTY_STRING, e);
     }
@@ -91,7 +91,7 @@ public class BrowserMobRequestInterceptorTest {
         given(httpRequestTransformer.transformRequest(bmRequest)).willReturn(wilmaRequest);
         willThrow(e).given(wilmaHttpRequestHandler).processRequest(wilmaRequest);
         // WHEN
-        underTest.process(bmRequest);
+        underTest.process(bmRequest, null);
         // THEN
         verify(logger).error(EMPTY_STRING, e);
     }
@@ -101,7 +101,7 @@ public class BrowserMobRequestInterceptorTest {
         // GIVEN
         given(httpRequestTransformer.transformRequest(bmRequest)).willReturn(wilmaRequest);
         // WHEN
-        underTest.process(bmRequest);
+        underTest.process(bmRequest, null);
         // THEN
         verify(wilmaHttpRequestHandler).processRequest(wilmaRequest);
         verify(browserMobRequestUpdater).updateRequest(bmRequest, wilmaRequest);

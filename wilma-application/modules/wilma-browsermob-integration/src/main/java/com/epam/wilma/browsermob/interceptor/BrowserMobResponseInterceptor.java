@@ -19,6 +19,7 @@ along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
 import com.epam.wilma.browsermob.transformer.BrowserMobResponseUpdater;
+import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.proxy.http.BrowserMobHttpResponse;
 import net.lightbody.bmp.proxy.http.ResponseInterceptor;
 
@@ -49,7 +50,7 @@ public class BrowserMobResponseInterceptor implements ResponseInterceptor {
     private WilmaHttpResponseProcessor responseProcessor;
 
     @Override
-    public void process(final BrowserMobHttpResponse response) {
+    public void process(final BrowserMobHttpResponse response, Har har) {
         try {
             WilmaHttpResponse wilmaResponse = responseTransformer.transformResponse(response);
             responseProcessor.processResponse(wilmaResponse);

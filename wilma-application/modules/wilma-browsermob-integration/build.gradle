@@ -29,7 +29,8 @@ dependencies {
   compile project(':wilma-application:wilma-properties')
 
 //  compile ('com.epam.wilma:browsermob-proxy:2.0-beta-8-wilma-1.4.96'){
-    compile ('com.epam.wilma:browsermob-proxy:2.0-beta-8-wilma-1.5.DEV'){
+//    compile ('com.epam.wilma:browsermob-proxy:2.0-beta-8-wilma-1.5.DEV'){
+    compile ('browsermob-proxy:browsermob-core-littleproxy:2.1.0-beta-5-wilma-1.5.DEV'){
   	exclude (module:'slf4j-jdk14')
   	exclude (module:'commons-logging')
   	exclude (module:'dom4j')
