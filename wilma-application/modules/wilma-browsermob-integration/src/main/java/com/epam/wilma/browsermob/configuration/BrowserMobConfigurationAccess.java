@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,12 +49,31 @@ public class BrowserMobConfigurationAccess implements ConfigurationAccessBase {
         if (responseVolatileString != null && "true".equals(responseVolatileString)) {
             responseVolatile = true;
         }
+        ExternalCertificateInformation externalCertificateInformation = null;
         String shouldKeepSslConnectionAliveString = propertyHolder.get("proxy.connect.keepalive");
         Boolean shouldKeepSslConnectionAlive = false;
         if (shouldKeepSslConnectionAliveString != null && "true".equals(shouldKeepSslConnectionAliveString)) {
             shouldKeepSslConnectionAlive = true;
         }
-        properties = new ProxyPropertyDTO(proxyPort, requestTimeout, responseVolatile, shouldKeepSslConnectionAlive);
+        String shouldUseExternalSslCertificationString = propertyHolder.get("proxy.ssl.cert.use.external");
+        Boolean shouldUseExternalSslCertification = false;
+        if (shouldUseExternalSslCertificationString != null && "true".equals(shouldUseExternalSslCertificationString)) {
+            shouldUseExternalSslCertification = true;
+        }
+
+        if (shouldUseExternalSslCertification) {
+            //build up an external cert information
+            String certAlias = propertyHolder.get("proxy.ssl.cert.alias");
+            String privateKeyAlias = propertyHolder.get("proxy.ssl.cert.privateKeyAlias");
+            String path = propertyHolder.get("proxy.ssl.cert.path");
+            String name = propertyHolder.get("proxy.ssl.cert.name");
+            String privateName = propertyHolder.get("proxy.ssl.cert.privateName");
+            String password = propertyHolder.get("proxy.ssl.cert.password");
+            String keyPassword = propertyHolder.get("proxy.ssl.cert.keyPassword");
+            externalCertificateInformation = new ExternalCertificateInformation(path, name, privateName, password, keyPassword, certAlias, privateKeyAlias);
+        }
+
+        properties = new ProxyPropertyDTO(proxyPort, requestTimeout, responseVolatile, shouldKeepSslConnectionAlive, externalCertificateInformation);
     }
 
     /**

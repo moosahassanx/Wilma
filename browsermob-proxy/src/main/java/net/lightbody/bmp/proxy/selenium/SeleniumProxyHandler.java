@@ -1,5 +1,6 @@
 package net.lightbody.bmp.proxy.selenium;
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
 import net.lightbody.bmp.proxy.ProxyServer;
 import net.lightbody.bmp.proxy.jetty.http.*;
 import net.lightbody.bmp.proxy.jetty.http.handler.AbstractHttpHandler;
@@ -37,6 +38,7 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
     private final String debugURL;
     private final boolean proxyInjectionMode;
     private final boolean forceProxyChain;
+    private final ExternalCertificateInformation externalCertificateInformation;
     protected Set<String> _proxyHostsWhiteList;
     protected Set<String> _proxyHostsBlackList;
     protected int _tunnelTimeoutMs = 250;
@@ -113,13 +115,14 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
-    public SeleniumProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain) {
+    public SeleniumProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain, ExternalCertificateInformation externalCertificateInformation) {
         super();
         this.trustAllSSLCertificates = trustAllSSLCertificates;
         this.dontInjectRegex = dontInjectRegex;
         this.debugURL = debugURL;
         this.proxyInjectionMode = proxyInjectionMode;
         this.forceProxyChain = forceProxyChain;
+        this.externalCertificateInformation = externalCertificateInformation;
     }
 
     /* ------------------------------------------------------------ */
@@ -516,8 +519,8 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
                     wireUpSslWithRemoteService(host, listener);
                 }
 
-                listener.setPassword("password");
-                listener.setKeyPassword("password");
+                listener.setPassword(externalCertificateInformation.getPassword());  //aka jetty.ssl.password
+                listener.setKeyPassword(externalCertificateInformation.getKeyPassword()); //aka jetty.ssl.keypassword
                 server.addListener(listener);
 
                 synchronized (shutdownLock) {
@@ -569,15 +572,15 @@ public class SeleniumProxyHandler extends AbstractHttpHandler {
             root.delete();
             root.mkdirs();
 
-            ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", root);
+            ResourceExtractor.extractResourcePath(getClass(), externalCertificateInformation.getPath(), root); // "/sslSupport"
 
 
-            KeyStoreManager mgr = new KeyStoreManager(root);
+            KeyStoreManager mgr = new KeyStoreManager(root, externalCertificateInformation);
             mgr.getCertificateByHostname(host);
-            mgr.getKeyStore().deleteEntry(KeyStoreManager._caPrivKeyAlias);
+            mgr.getKeyStore().deleteEntry(externalCertificateInformation.getPrivKeyAlias()); // KeyStoreManager._caPrivKeyAlias
             mgr.persist();
 
-            listener.setKeystore(new File(root, "cybervillainsCA.jks").getAbsolutePath());
+            listener.setKeystore(new File(root, externalCertificateInformation.getPrivateName()).getAbsolutePath()); // "cybervillainsCA.jks"
             listener.setNukeDirOrFile(root);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,5 +1,6 @@
 package net.lightbody.bmp.proxy;
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
 import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.core.har.HarLog;
@@ -32,6 +33,7 @@ public class ProxyServer {
 
     private Server server;
     private int port = -1;
+    private static ExternalCertificateInformation externalCertificateInformation;
     private static Boolean shouldKeepSslConnectionAlive = new Boolean(false); //set it to true if such (e.g. .net) clients we have
     private BrowserMobHttpClient client;
     private StreamManager streamManager;
@@ -39,9 +41,6 @@ public class ProxyServer {
     private BrowserMobProxyHandler handler;
     private int pageCount = 1;
     private final AtomicInteger requestCounter = new AtomicInteger(0);
-
-    public ProxyServer() {
-    }
 
     public ProxyServer(final int port) {
         this.port = port;
@@ -64,7 +63,7 @@ public class ProxyServer {
         context.setContextPath("/");
         server.addContext(context);
 
-        handler = new BrowserMobProxyHandler();
+        handler = new BrowserMobProxyHandler(externalCertificateInformation);
         handler.setJettyServer(server);
         handler.setShutdownLock(new Object());
         client = new BrowserMobHttpClient(streamManager, requestCounter, requestTimeOut);
@@ -273,6 +272,15 @@ public class ProxyServer {
 
     public static void setShouldKeepSslConnectionAlive(Boolean shouldKeepSslConnectionAlive) {
         ProxyServer.shouldKeepSslConnectionAlive = shouldKeepSslConnectionAlive;
+    }
+
+    public static void setExternalCertificateInformation(ExternalCertificateInformation externalCertificateInformation) {
+        if (externalCertificateInformation == null) {
+            ProxyServer.externalCertificateInformation = new ExternalCertificateInformation("/sslSupport", "cybervillainsCA.cer",
+                    "cybervillainsCA.jks", "password", "password", "signingCert", "signingCertPrivKey");
+        } else {
+            ProxyServer.externalCertificateInformation = externalCertificateInformation;
+        }
     }
 
 }

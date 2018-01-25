@@ -1,5 +1,6 @@
 package net.lightbody.bmp.proxy;
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
 import net.lightbody.bmp.proxy.http.BadURIException;
 import net.lightbody.bmp.proxy.http.BrowserMobHttpClient;
 import net.lightbody.bmp.proxy.http.BrowserMobHttpRequest;
@@ -54,8 +55,8 @@ public class BrowserMobProxyHandler extends SeleniumProxyHandler {
     private int headerBufferMultiplier = HEADER_BUFFER_DEFAULT;
     private BrowserMobHttpClient httpClient;
 
-    public BrowserMobProxyHandler() {
-        super(true, "", "", false, false);
+    public BrowserMobProxyHandler(ExternalCertificateInformation externalCertificateInformation) {
+        super(true, "", "", false, false, externalCertificateInformation);
         setShutdownLock(new Object());
 
         // set the tunnel timeout to something larger than the default 30 seconds

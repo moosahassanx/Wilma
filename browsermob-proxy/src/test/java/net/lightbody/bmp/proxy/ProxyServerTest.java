@@ -15,6 +15,7 @@ public class ProxyServerTest {
 
     @Before
     public void startServer() throws Exception {
+        ProxyServer.setExternalCertificateInformation(null);
         server.start(PROXY_TIMEOUT);
     }
 

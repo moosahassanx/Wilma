@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
+
 /**
  * Holds module specific properties.
  * @author Tunde_Kovacs, Tamas Kohegyi
@@ -29,6 +31,7 @@ public class ProxyPropertyDTO {
     private final Integer requestTimeout;
     private final Boolean allowResponseUpdate;
     private final Boolean shouldKeepSslConnectionAlive;
+    private final ExternalCertificateInformation externalCertificateInformation;
 
     /**
      * Constructs a new property holding object with the given fields.
@@ -36,13 +39,16 @@ public class ProxyPropertyDTO {
      * @param requestTimeout the value of a request timeout in milliseconds
      * @param allowResponseUpdate whether proxy should work in mode that allows response update (slower), or not (faster)
      * @param shouldKeepSslConnectionAlive if client expects CONNECT connections kept alive or not
+     * @param externalCertificateInformation Certification parameters in case the proxy should use an external certificate for SSL connections
      */
-    public ProxyPropertyDTO(final Integer proxyPort, final Integer requestTimeout, final Boolean allowResponseUpdate, Boolean shouldKeepSslConnectionAlive) {
+    public ProxyPropertyDTO(final Integer proxyPort, final Integer requestTimeout, final Boolean allowResponseUpdate,
+            Boolean shouldKeepSslConnectionAlive, ExternalCertificateInformation externalCertificateInformation) {
         super();
         this.proxyPort = proxyPort;
         this.requestTimeout = requestTimeout;
         this.allowResponseUpdate = allowResponseUpdate;
         this.shouldKeepSslConnectionAlive = shouldKeepSslConnectionAlive;
+        this.externalCertificateInformation = externalCertificateInformation;
     }
 
     public Integer getProxyPort() {
@@ -60,4 +66,9 @@ public class ProxyPropertyDTO {
     public Boolean getShouldKeepSslConnectionAlive() {
         return shouldKeepSslConnectionAlive;
     }
+
+    public ExternalCertificateInformation getExternalCertificateInformation() {
+        return externalCertificateInformation;
+    }
+
 }

@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with Wilma.  If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
+import com.epam.browsermob.ssl.ExternalCertificateInformation;
 import net.lightbody.bmp.proxy.ProxyServer;
 
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class BrowserMobProxy implements Proxy {
     private Integer requestTimeout;
     private Boolean responseVolatile;
     private Boolean shouldKeepSslConnectionAlive;
+    private ExternalCertificateInformation externalCertificateInformation;
 
     @Autowired
     private ProxyServer server;
@@ -92,6 +94,7 @@ public class BrowserMobProxy implements Proxy {
         try {
             getProperties();
             server.setPort(proxyPort);
+            ProxyServer.setExternalCertificateInformation(externalCertificateInformation);
             server.start(requestTimeout);
             ProxyServer.setResponseVolatile(responseVolatile);
             ProxyServer.setShouldKeepSslConnectionAlive(shouldKeepSslConnectionAlive);
@@ -110,6 +113,7 @@ public class BrowserMobProxy implements Proxy {
         requestTimeout = properties.getRequestTimeout();
         responseVolatile = properties.getAllowResponseUpdate();
         shouldKeepSslConnectionAlive = properties.getShouldKeepSslConnectionAlive();
+        externalCertificateInformation = properties.getExternalCertificateInformation();
     }
 
     @Override
